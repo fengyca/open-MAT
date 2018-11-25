@@ -449,11 +449,3 @@ def getUDID(request):
     AppiumPort = devicesList[udid]['port']
     return JsonResponse({'data': AppiumPort})
 
-
-# def YDover(request):
-#     """越过云贷扫脸扫身份证"""
-#     udid = request.GET.get('udid')
-#     phone = request.GET.get('phoneNum')
-#
-#     reslut, tag = DHSQL.insertMYSQL(phone=phone, udid=udid)
-#     return JsonResponse({'data': reslut, 'tag': tag})
