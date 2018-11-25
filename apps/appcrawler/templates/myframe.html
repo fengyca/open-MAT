@@ -1,0 +1,672 @@
+<!doctype html>
+<head>
+    {% load static %}
+    <link href="{% static 'appcrawler/css/bootstrap.min.css' %}" rel="stylesheet">
+    <script src="{% static 'appcrawler/js/jquery-3.2.1.min.js' %}"></script>
+    <script src="{% static 'appcrawler/js/bootstrap.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'appcrawler/css/bootstrap.min.css' %}" type="text/css"/>
+    <link rel="stylesheet" href="{% static 'appcrawler/css/mystyle.css' %}" type="text/css"/>
+    <link href="{% static 'appcrawler/css/amazeui.min.css' %}" rel="stylesheet">
+    <link href="{% static 'appcrawler/css/admin.css' %}" rel="stylesheet">
+    <link href="{% static 'appcrawler/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'appcrawler/jquery-ui-1.12.1/jquery-ui.css' %}">
+</head>
+<style>
+    .myscroll {
+        width: 100%;
+        height: 400px;
+        overflow: scroll;
+    }
+
+    li {
+        width: 400px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        -o-text-overflow: ellipsis;
+    }
+
+    ul {
+        margin-left: -20px;
+    }
+
+    table tbody {
+        display: block;
+        height: 195px;
+        overflow-y: scroll;
+    }
+
+    table thead,
+    tbody tr {
+        display: table;
+        width: 100%;
+        table-layout: fixed;
+    }
+
+    /*关键设置：滚动条默认宽度是16px 将thead的宽度减16px*/
+    table thead {
+        width: calc(100% - 1em)
+    }
+
+    table thead th {
+        background: #ccc;
+    }
+
+    .file-box > input {
+        vertical-align: middle;
+        margin: 0;
+        padding: 0
+    }
+
+    .file-box {
+        position: relative;
+        width: 340px
+    }
+
+    .txt {
+        height: 22px;
+        border: 1px solid #cdcdcd;
+        width: 180px;
+    }
+
+    .file {
+        position: absolute;
+        top: 0;
+        right: 80px;
+        height: 24px;
+        filter: alpha(opacity:0);
+        opacity: 0;
+        width: 260px
+    }
+</style>
+<body>
+<div class="container" style="margin-top: 10px; margin-left: 0px;width: 100%">
+    <div class="row clearfix">
+        <div id="mycanvas" class="col-xs-5 col-md-5" style="margin-top: 1%">
+            <h4 style="user-select:none" id="freetime" title="半小时无操作将自动关闭投屏！"><span style="color: red;user-select:none">提示:</span>用完请及时关闭投屏～</h4>
+            <canvas id="canvas" style="border: 1px solid; color: #0c1312;" onmousedown="mousedown()"
+                    onmouseup="mouseup()" onmouseout="mouseout()"
+                    onmousemove="mousemove()"></canvas>
+            <div class="btn-group" data-toggle="buttons" id="buttons">
+                <label class="btn btn-default" id="caidan" title="菜单键">
+                    <input type="checkbox"> <span class="am-icon-th-large"></span></label>
+                <label class="btn btn-default" id="home" title="hone键">
+                    <input type="checkbox"> <span class="am-icon-circle-o"></span></label>
+                <label class="btn btn-default" id="fanhui" title="返回">
+                    <input type="checkbox"> <span class="am-icon-chevron-left"></span></label>
+                <label class="btn btn-default" id="dianyuan" title="电源键">
+                    <input type="checkbox"> <span class="am-icon-power-off"></span></label>
+            </div>
+        </div>
+        <div id="myUIAutomatorView" class="col-md-3 col-xs-6 column">
+            <div class="tabbable" id="tabs-25498">
+                <ul class="nav nav-tabs" style="width: 95%;margin-left: 1%;user-select:none">
+                    <li class="active" style="width: 25%">
+                        <a href="#panel-944436" data-toggle="tab">APK安装</a>
+                    </li>
+                    <li style="width: 25%;">
+                        <a href="#panel-819582" data-toggle="tab">UIView</a>
+                    </li>
+                    <li style="width: 25%;">
+                        <a href="#panel-819581" data-toggle="tab">辅助功能项</a>
+                    </li>
+                </ul>
+                <div class="tab-content" style="margin-left: 1%;margin-top: 1%;">
+                    <div class="tab-pane active" id="panel-944436">
+                        <div class="file-box" style="user-select:none">
+                            <input type='text' name='textfield' id='textfield' class='txt' value="最大100M,兄弟别乱来..."/>
+                            <input type='button' class='btn-md'
+                                   style="background-color: #FFF;border: 1px solid #CDCDCD;height: 24px;width: 70px;"
+                                   value='浏览...'/>
+                            <input type="file" name="file" class="file" id="file_upload" size="28"
+                                   onchange="document.getElementById('textfield').value=this.value"/>
+                            <input type="button"
+                                   style="background-color: #FFF;border: 1px solid #CDCDCD;height: 24px;width: 70px;"
+                                   class="btn"
+                                   onclick="FileUpload()" value="上传安装"/>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="panel-819582">
+                        <div class="btn-group" data-toggle="buttons" id="buttons">
+                            <label class="btn btn-primary btn-xs" id="Automator" title="UIAutomatorView">
+                                <input type="checkbox"> View</label>
+                            <label class="btn btn-default btn-xs" id="lock" title="屏幕锁定">
+                                <input type="checkbox"> <span class="am-icon-unlock"></span></label>
+                        </div>
+                        <div id="UITree"
+                             style="border: 1px solid; color: #0c1312;display: none;user-select:none"
+                             class="myscroll"></div>
+                        <div id="Node_Detail" style="border: 1px solid; color: #0c1312;display: none"
+                             class="table-responsive">
+                            <table class="table-bordered table">
+                                <thead>
+                                <tr>
+                                    <th>属性名</th>
+                                    <th>值</th>
+                                </tr>
+                                </thead>
+                                <tbody id="detailTbody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="panel-819581">
+                        <div class="btn-group" data-toggle="buttons" id="buttons">
+                            <label class="btn btn-primary btn-xs" id="xy" title="获取屏幕分辨率">
+                                <input type="checkbox"> 获取分辨率</label>
+                            <label class="btn btn-primary btn-xs" id="getUDID" title="获取当前设备UDID及PORT">
+                                <input type="checkbox"> 获取UDID</label>
+                        </div>
+                        <div class="modal-footer" style="margin-top: 5%"></div>
+{#                        <div class="form-group">#}
+{#                            <div class="input-group">#}
+{#                                <span class="input-group-btn">#}
+{#                                    <button class="btn btn-default" type="button" id="over"#}
+{#                                            title="跳过扫身份证与扫脸">跳过</button>#}
+{#                                </span>#}
+{#                                <input type="text" class="form-control" placeholder="输入注册手机号，跳过扫身份证与扫脸" id="phoneNumb">#}
+{#                            </div>#}
+{#                        </div>#}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="name" style="display: none"></div>
+    <div class="modal fade bd-example-modal-sm" id="myModal" role="dialog" data-backdrop="false" aria-hidden="true">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header" id="AlertTitle" style="text-align:center">
+                </div>
+                <div class="modal-body">
+                    <p class="text-center mb-0" id="msg"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script>
+    var second = 0;
+    var minute = 0;
+    $(document).ready(function () {
+        setInterval(function () {
+            interval();
+        }, 1000);
+        function interval() {
+            second++;
+            if (second == 60) {
+                second = 0;
+                minute += 1;
+            }
+            if (minute >= 1 && minute < 30) {
+                $("#freetime").html('<span style="color: red;user-select:none">空闲:</span>' + minute + "分" + second + "秒"+'<span style="color: red;user-select:none">(30分自动关闭,点手机取消)</span>');
+            }
+            if (minute == 30) {
+                $.ajax({
+                    url: '/appcrawler/stopMinicap',
+                    type: 'GET',
+                    datatype: 'json',
+                    data: {'udid': '{{ udid }}'}
+                }).done(function (data) {
+                    if (data.data == 'True') {
+                        PassAlert('关闭成功');
+                        $("#frameHere").empty();
+                        $("#AppiumMessage").empty();
+                        $("#AppiumMessage").html('<span style="color: red;">用完请及时关闭投屏，以免影响其他人使用！！</span>');
+                    } else {
+                        ErrorAlert('系统错误，请联系管理员fengyca!!')
+                    }
+                });
+                parent.location.reload();  //刷新父页面
+            }
+        }
+    });
+    /*minicap websocket browser:true*/
+    var BLANK_IMG =
+        'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
+    var canvas = document.getElementById('canvas')
+        , g = canvas.getContext('2d');
+
+    if (!canvas.getContext) {
+        alert("Canvas not supported. Please install a HTML5 compatible browser.");
+    }
+    var ws = new WebSocket('ws://10.126.1.52:{{ port }}', 'minicap');
+    ws.binaryType = 'blob';
+
+    ws.onclose = function () {
+        console.log('onclose', arguments)
+    };
+
+    ws.onerror = function () {
+        console.log('onerror', arguments)
+    };
+    bit = 1;  //定义全局变量
+    ws.onmessage = function (message) {
+        var blob = new Blob([message.data], {type: 'image/jpeg'});
+        var URL = window.URL || window.webkitURL;
+        var img = new Image();
+        img.onload = function () {
+            console.log(img.width, img.height);
+            //缩放比例
+            bit = img.height / 640;
+            //设置画布宽
+            canvas.width = img.width / bit;
+            //web控件大小跟随图片联动
+            $("#buttons").css('width', img.width / bit);
+            $("label").css('width', img.width / (bit * 4));
+            //设置画布高度
+            canvas.height = img.height / bit;
+            //画图
+            g.drawImage(img, 0, 0, img.width / bit, img.height / bit);
+            img.onload = null;
+            img.src = BLANK_IMG;
+            img = null;
+            u = null;
+            blob = null;
+        };
+        var u = URL.createObjectURL(blob);
+        img.src = u
+    };
+
+    ws.onopen = function () {
+        console.log('onopen', arguments);
+        ws.send('1920x1080/0')
+    };
+
+    function getPointOnCanvas(canvas, x, y) {
+        var bbox = canvas.getBoundingClientRect();
+        var cx = parseInt((x - bbox.left * (canvas.width / bbox.width)) * bit);
+        var cy = parseInt((y - bbox.top * (canvas.height / bbox.height)) * bit);
+        return {'cx': cx, 'cy': cy}
+    }
+
+    {#    连接minitouch的websocket，由websocket转发给minitouch#}
+    var wst = new WebSocket("ws://10.126.1.52:{{ mtsp }}");
+    wst.onopen = function (e) {
+        console.log('Connection to server opened');
+    };
+    function sendMessage(met, x, y) {
+        wst.send(met + ' 0 ' + x + ' ' + y + ' 50 \n');
+    }
+
+    tap = 0;
+    //发给minitouch, click
+    function mousedown(event) {
+        second = 0;  //重置空闲时间
+        minute = 0;
+        $("#freetime").html('<span style="color: red;user-select:none">提示:</span>' + '用完请及时关闭投屏～');
+        tap = 1;
+        var e = event || window.event;
+        var cx = e.pageX;
+        var cy = e.pageY;
+        var canvas = e.target;
+        var bbox = canvas.getBoundingClientRect();
+        var sx = parseInt((cx - bbox.left * (canvas.width / bbox.width)) * bit);
+        var sy = parseInt((cy - bbox.top * (canvas.height / bbox.height)) * bit);
+        sendMessage('d', sx, sy)
+    }
+    function mousemove(event) {
+        // 一点都不优雅
+        if (tap == 1) {
+            var e = event || window.event;
+            var ux = e.pageX;
+            var uy = e.pageY;
+            var canvas = e.target;
+            var location = getPointOnCanvas(canvas, ux, uy);
+            sendMessage('m', location.cx, location.cy)
+        }
+    }
+    function mouseout(event) {
+        tap = 0;
+        sendMessage('u 0\n');
+    }
+    function mouseup(event) {
+        second = 0;  //重置操作时间
+        minute = 0;
+        $("#freetime").html('<span style="color: red;user-select:none">提示:</span>' + '用完请及时关闭投屏～');
+        tap = 0;
+        var e = event || window.event;
+        var ux = e.pageX;
+        var uy = e.pageY;
+        var canvas = e.target;
+        var bbox = canvas.getBoundingClientRect();
+        var ex = parseInt((ux - bbox.left * (canvas.width / bbox.width)) * bit);
+        var ey = parseInt((uy - bbox.top * (canvas.height / bbox.height)) * bit);
+        sendMessage('m', ex, ey);
+        sendMessage('u 0\n');
+    }
+
+    $('.btn-group').on('click', 'label', function () {
+        var tag = $(this).attr('id');
+        var name = $("#name").text();
+        if (tag == 'Automator') {
+            $.ajax({
+                url: '/appcrawler/getDevicesXML',
+                type: 'GET',
+                datatype: 'json',
+                data: {'udid': '{{ udid }}', 'name': name},
+                beforeSend: function () {
+                    $('#AlertTitle').html('<h3>提示</h3>');
+                    $('#msg').html("稍候~正在拼命处理...如果页面长时间不动，请等待appium超时，然后手动打开app到此页面，再获取view！");
+                    $('#myModal').modal('show');
+                    //$("#myUIAutomatorView").hide();
+                    $("#UITree").hide();
+                    $("#Node_Detail").hide();
+                }
+            }).done(function (data) {
+                $('#myModal').modal('hide');
+                if (data.data == '') {
+                    alert('kong')
+                } else {
+                    $("#lock").children('span').removeClass('am-icon-unlock').addClass('am-icon-lock');
+                    //$("#myUIAutomatorView").show();
+                    $("#UITree").show();
+                    $("#Node_Detail").show();
+                    $("#UITree").html(data.data);
+                    $("#name").html(data.name);
+                    //去除canvas的鼠标事件,造成一种屏幕锁定的假象
+                    $("#mycanvas").onmousedown = null;
+                    $("#mycanvas").onmouseup = null;
+                    $("#mycanvas").onmouseout = null;
+                    $("#mycanvas").onmousemove = null;
+                }
+
+            })
+        } else if (tag == 'lock') {  //屏幕锁定状态
+            var cs = $("#lock").children('span').attr('class');
+            if (cs == 'am-icon-lock') {  //解锁
+                $.ajax({  //删除yml分析文件
+                    url: '/appcrawler/deleYml',
+                    type: 'GET',
+                    datatype: 'json',
+                    data: {'name': name}
+                }).done(function (data) {
+                    $("#lock").children('span').removeClass('am-icon-lock').addClass('am-icon-unlock');
+                    //$("#myUIAutomatorView").hide();
+                    $("#UITree").hide();
+                    $("#Node_Detail").hide();
+                    $("#UITree").empty();
+                    $("#name").empty();
+                    if (data.data == 'True') {
+                        PassAlert('解锁成功！');
+                        // 添加鼠标事件，造成一种解锁的假象，是的，一切都是假象，都是假的，就像我一个测试，在做开发一样，都是假的
+                        $("#mycanvas").onmousedown = mousedown();
+                        $("#mycanvas").onmouseup = mouseup();
+                        $("#mycanvas").onmouseout = mouseout();
+                        $("#mycanvas").onmousemove = mousemove();
+                    } else {
+                        ErrorAlert('系统错误，联系fengyca！')
+                    }
+                })
+            } else {
+                WarningAlert('当前屏幕未锁定！')
+            }
+        } else if (tag == 'xy') {  //获取屏幕分辨率
+            $.ajax({
+                url: '/appcrawler/getXY',
+                type: 'GET',
+                datatype: 'json',
+                data: {'udid': '{{ udid }}'}
+            }).done(function (data) {
+                PassAlert(data.data)
+            })
+        } else if (tag == 'getUDID') {  //获取屏幕分辨率
+            $.ajax({
+                url: '/appcrawler/getUDID',
+                type: 'GET',
+                datatype: 'json',
+                data: {'udid': '{{ udid }}'}
+            }).done(function (data) {
+                alert('UDID:' + '{{ udid }}'+', 端口号:' + data.data)
+            })
+        } else {
+            $.ajax({
+                url: '/appcrawler/ctrlMobilePhone',
+                type: 'GET',
+                datatype: 'json',
+                data: {'tag': tag, 'udid': '{{ udid }}'}
+            }).done(function (data) {
+                if (data.data == 'False') {
+                    ErrorAlert('执行错误，请重试，或联系管理员！')
+                }
+            })
+        }
+        return false  //阻止冒泡事件重复点击
+    });
+    $(document).on('click', "#over", function () {
+        var phoneNum = $("#phoneNumb").val();
+        if (phoneNum == '') {
+            WarningAlert('不能输入为空')
+        } else {
+            $.ajax({
+                url: '/appcrawler/YDover',
+                type: 'GET',
+                datatype: 'json',
+                data: {'udid': '{{ udid }}', 'phoneNum': phoneNum}
+            }).done(function (data) {
+                if (data.tag == '0') {
+                    ErrorAlert(data.data)
+                } else {
+                    PassAlert(data.data)
+                }
+            })
+        }
+    });
+    $("#UITree").on('click', 'li', function () {
+        var id = $(this).attr('id');
+        var name = $("#name").text();
+        $('li').css("background-color", "");
+        //$('#' + data.id).css("background-color", "#FF0000");
+        $(this).css("background-color", "#FF0000");
+        $.ajax({
+            url: '/appcrawler/liDetail',
+            type: 'GET',
+            datatype: 'json',
+            data: {'id': id, 'name': name, 'bit': bit}
+        }).done(function (data) {
+            $("#detailTbody").empty();
+            $("#detailTbody").html(data.data);
+            //红框标出
+            g.strokeStyle = "red";
+            g.strokeRect(Number(data.x), Number(data.y), Number(data.lenx), Number(data.leny));
+        });
+        return false  //阻止冒泡事件重复点击
+    });
+    {#    监控键盘输入操作#}
+    {#    function sendkey(key) {#}
+    {#        $.ajax({#}
+    {#            url: '/appcrawler/sendkey',#}
+    {#            type: 'GET',#}
+    {#            datatype: 'json',#}
+    {#            data: {'key': key, 'udid': '{{ udid }}'}#}
+    {#        })#}
+    {#    }#}
+    {#    $(document).keydown(function (event) {#}
+    {#        switch (event.keyCode) {#}
+    {#            case 65:#}
+    {#                sendkey('a');#}
+    {#                break;#}
+    {#            case 66:#}
+    {#                sendkey('b');#}
+    {#                break;#}
+    {#            case 67:#}
+    {#                sendkey('c');#}
+    {#                break;#}
+    {#            case 68:#}
+    {#                sendkey('d');#}
+    {#                break;#}
+    {#            case 69:#}
+    {#                sendkey('e');#}
+    {#                break;#}
+    {#            case 70:#}
+    {#                sendkey('f');#}
+    {#                break;#}
+    {#            case 71:#}
+    {#                sendkey('g');#}
+    {#                break;#}
+    {#            case 72:#}
+    {#                sendkey('h');#}
+    {#                break;#}
+    {#            case 73:#}
+    {#                sendkey('i');#}
+    {#                break;#}
+    {#            case 74:#}
+    {#                sendkey('j');#}
+    {#                break;#}
+    {#            case 75:#}
+    {#                sendkey('k');#}
+    {#                break;#}
+    {#            case 76:#}
+    {#                sendkey('l');#}
+    {#                break;#}
+    {#            case 77:#}
+    {#                sendkey('m');#}
+    {#                break;#}
+    {#            case 78:#}
+    {#                sendkey('n');#}
+    {#                break;#}
+    {#            case 79:#}
+    {#                sendkey('o');#}
+    {#                break;#}
+    {#            case 80:#}
+    {#                sendkey('p');#}
+    {#                break;#}
+    {#            case 81:#}
+    {#                sendkey('q');#}
+    {#                break;#}
+    {#            case 82:#}
+    {#                sendkey('r');#}
+    {#                break;#}
+    {#            case 83:#}
+    {#                sendkey('s');#}
+    {#                break;#}
+    {#            case 84:#}
+    {#                sendkey('t');#}
+    {#                break;#}
+    {#            case 85:#}
+    {#                sendkey('u');#}
+    {#                break;#}
+    {#            case 86:#}
+    {#                sendkey('v');#}
+    {#                break;#}
+    {#            case 87:#}
+    {#                sendkey('w');#}
+    {#                break;#}
+    {#            case 88:#}
+    {#                sendkey('x');#}
+    {#                break;#}
+    {#            case 89:#}
+    {#                sendkey('y');#}
+    {#                break;#}
+    {#            case 90:#}
+    {#                sendkey('z');#}
+    {#                break;#}
+    {#            case 48 || 96:#}
+    {#                sendkey('0');#}
+    {#                break;#}
+    {#            case 49 || 97:#}
+    {#                sendkey('1');#}
+    {#                break;#}
+    {#            case 50 || 98:#}
+    {#                sendkey('2');#}
+    {#                break;#}
+    {#            case 51 || 99:#}
+    {#                sendkey('3');#}
+    {#                break;#}
+    {#            case 52 || 100:#}
+    {#                sendkey('4');#}
+    {#                break;#}
+    {#            case 53 || 101:#}
+    {#                sendkey('5');#}
+    {#                break;#}
+    {#            case 54 || 102:#}
+    {#                sendkey('6');#}
+    {#                break;#}
+    {#            case 55 || 103:#}
+    {#                sendkey('7');#}
+    {#                break;#}
+    {#            case 56 || 104:#}
+    {#                sendkey('8');#}
+    {#                break;#}
+    {#            case 57 || 105:#}
+    {#                sendkey('9');#}
+    {#                break;#}
+    {#            case 8:#}
+    {#                sendkey('67');#}
+    {#                break; //删除#}
+    {#            case 13:#}
+    {#                sendkey('66');#}
+    {#                break; // enter#}
+    {#            case 32:#}
+    {#                sendkey('62');#}
+    {#                break; // space#}
+    {#        }#}
+    {#                大写#}
+    {#        alert(String.fromCharCode(event.keyCode))#}
+    {#    });#}
+    function PassAlert(msg) {
+        $('#AlertTitle').html('<span class="am-icon-btn am-success am-icon-check"></span>');
+        $('#msg').html(msg);
+        $('#myModal').modal('show');
+        setTimeout(function () {
+            $("#myModal").modal("hide");
+            $('#AlertTitle').empty();
+            $('#msg').empty()
+        }, 1500);
+    }
+    function WarningAlert(msg) {
+        $('#AlertTitle').html('<span class="am-icon-btn am-warning am-icon-warning"></span>');
+        $('#msg').html(msg);
+        $('#myModal').modal('show');
+        setTimeout(function () {
+            $("#myModal").modal("hide");
+            $('#AlertTitle').empty();
+            $('#msg').empty()
+        }, 1500);
+    }
+    function ErrorAlert(msg) {
+        $('#AlertTitle').html('<span class="am-icon-btn am-danger am-icon-remove"></span>');
+        $('#msg').html(msg);
+        $('#myModal').modal('show');
+        setTimeout(function () {
+            $("#myModal").modal("hide");
+            $('#AlertTitle').empty();
+            $('#msg').empty()
+        }, 1500);
+    }
+    function FileUpload() {
+        var form_data = new FormData();
+        var file_info = $('#file_upload')[0].files[0];
+        if (typeof(file_info) == 'undefined') {
+            WarningAlert('要先选择文件，然后在点击上传');
+        } else {
+            form_data.append('file', file_info);
+            form_data.append('udid', '{{ udid }}');
+            form_data.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+            $.ajax({
+                url: '/appcrawler/uploadFile',
+                type: 'POST',
+                data: form_data,
+                processData: false,  // tell jquery not to process the data
+                contentType: false, // tell jquery not to set contentType
+                beforeSend: function () {
+                    $('#AlertTitle').html('<h3>提示</h3>');
+                    $('#msg').html('稍候，正在上传以及安装！');
+                    $('#myModal').modal('show');
+                    setTimeout(function () {
+                        $("#myModal").modal("hide");
+                        $('#AlertTitle').empty();
+                        $('#msg').empty()
+                    }, 3000);
+                }
+            }).done(function (data) {
+                if (data.data == 'True') {
+                    PassAlert('安装指令发送成功，稍等3s！')
+                } else {
+                    ErrorAlert('安装失败，原因你自己找找，实在不行联系管理员！')
+                }
+            });
+        }
+
+    }
+</script>

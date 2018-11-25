@@ -1,0 +1,91 @@
+MAT是一个轻量级移动设备自动化管理系统
+
+功能简介：
+1.自动化遍历功能，一键启动遍历测试
+2.自动化终端设备管理系统，远程启动Appium，支持移动端投屏到web端
+
+开发环境：macOS
+环境安装：
+python2.7.15
+Django1.11.7
+Appium1.8.1
+Appclawler2-1.3.jar
+
+应用Celery做异步任务调度：
+1.安装celery
+pip install -U celery[redis]
+
+2.安装 redis-server
+brew install redis
+
+添加redis到环境变量：
+1.open -e .bash_profile
+2.添加 export PATH=${PATH}:/usr/local/Cellar/redis@3.2/3.2.11/bin
+3.source .bash_profile
+
+----启动命令----
+启动redis-server:
+终端命令 redis-server /Users/yyfaxx/MAT/MAT/redis.conf
+
+启动worker，同manage.py目录下：
+celery -A MAT worker -l debug -c 30
+
+启动nginx
+sudo nginx -s reload
+
+启动uwsgi
+uwsgi -x django_uwsgi.xml
+
+启动项目同manage.py目录下：
+python manage.py runerver
+-----------------------------------------------------------
+|                                                        |
+|******************Django+nginx+uwsgi启动*****************|
+|启动  ./make.sh start                                    |
+|终止  ./make.sh stop                                     |
+|重启  ./make.sh restart                                  |
+|                                                        |
+|******************redis异步队列相关************************|
+|启动redis-server:                                        |
+|redis-server /Users/yyfaxx/MAT/MAT/redis.conf           |
+|启动worker，同manage.py目录下：                            |
+|celery -A MAT worker -l debug -c 6                      |
+|                                                        |
+----------------------------------------------------------
+adb命令合集
+获取cpu版本
+adb shell getprop ro.product.cpu.abi | tr -d '\r'
+
+获取系统版本(api level)
+adb shell getprop ro.build.version.sdk | tr -d '\r'
+
+获取当前设备分辨率
+adb shell dumpsys window | grep -Eo 'init=\d+x\d+' | head -1 | cut -d= -f 2
+
+安装minicap
+adb push minicap /data/local/tmp
+adb push minicap.so /data/local/tmp
+
+启动minicap
+adb -s shell LD_LIBRARY_PATH=/data/local/tmp /data/local/tmp/minicap -P 1080x1920@1080x1920/0
+
+本地的端口映射到minicap
+adb forward tcp:1717 localabstract:minicap
+
+启动app.js
+node app.js
+
+
+待开发，结合
+minitouch 执行触摸命令
+
+功能要完善，优化。
+
+
+-----xml----
+获取xml
+adb shell uiautomator dump /sdcard/ui.xml
+pull到本地
+adb pull /sdcard/ui.xml /Users/yyfaxx/MAT/apps/appcrawler/UIxml
+
+

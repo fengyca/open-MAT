@@ -1,0 +1,16 @@
+Z2XGK16903915739: {name: 华为p8,  config: appium  -p 4717 -bp 4827 -U Z2XGK16903915739, platformName: android, port: 4717, pcPort: 1707, socketPort: 8997, minitouchPort: 1107, mtsp: 9048}
+f1c2ac34:         {name: OPPOR11,config: appium  -p 4718 -bp 4828 -U f1c2ac34,         platformName: android, port: 4718, pcPort: 1708, socketPort: 8998, minitouchPort: 1108, mtsp: 9049}
+87cd907c:         {name: vivoX20,config: appium  -p 4719 -bp 4829 -U 87cd907c,         platformName: android, port: 4719, pcPort: 1709, socketPort: 8999, minitouchPort: 1109, mtsp: 9049}
+f42c33e8:         {name: vivoX7, config: appium  -p 4720 -bp 4830 -U f42c33e8,         platformName: android, port: 4720, pcPort: 1710, socketPort: 9000, minitouchPort: 1110, mtsp: 9050}
+CLB0218330002858: {name: 华为P20, config: appium  -p 4721 -bp 4831 -U CLB0218330002858, platformName: android, port: 4721, pcPort: 1711, socketPort: 9001, minitouchPort: 1111, mtsp: 9051}
+1c3c0f75:         {name: Xplay6, config: appium  -p 4722 -bp 4832 -U 1c3c0f75,         platformName: android, port: 4722, pcPort: 1712, socketPort: 9002, minitouchPort: 1112, mtsp: 9052}
+QLXBBCA680133985: {name: 荣耀5S,  config: appium  -p 4723 -bp 4833 -U QLXBBCA680133985,  platformName: android, port: 4723, pcPort: 1713, socketPort: 9003, minitouchPort: 1113, mtsp: 9053}
+69S49HFMRKYSNZSS: {name: OPPOR7, config: appium  -p 4724 -bp 4834 -U 69S49HFMRKYSNZSS,  platformName: android, port: 4724, pcPort: 1714, socketPort: 9004, minitouchPort: 1114, mtsp: 9054}
+F8UDU16411003086: {name: 荣耀六,  config: appium  -p 4725 -bp 4835 -U F8UDU16411003086,  platformName: android, port: 4725, pcPort: 1715, socketPort: 9005, minitouchPort: 1115, mtsp: 9055}
+5LM7N16902004131: {name: MATE10, config: appium  -p 4726 -bp 4836 -U 5LM7N16902004131,  platformName: android, port: 4726, pcPort: 1716, socketPort: 9006, minitouchPort: 1116, mtsp: 9056}
+68UDU17A19032297: {name: 麦芒6,   config: appium  -p 4727 -bp 4837 -U 68UDU17A19032297,  platformName: android, port: 4727, pcPort: 1717, socketPort: 9007, minitouchPort: 1117, mtsp: 9057}
+91QEBPE5R859:     {name: 魅族n3,  config: appium  -p 4728 -bp 4838 -U 91QEBPE5R859,      platformName: android, port: 4728, pcPort: 1718, socketPort: 9008, minitouchPort: 1118, mtsp: 9058}
+LE67A06310079608: {name: 乐视2S,  config: appium  -p 4729 -bp 4839 -U LE67A06310079608,  platformName: android, port: 4729, pcPort: 1719, socketPort: 9009, minitouchPort: 1119, mtsp: 9059}
+UYT0217B11004058: {name: MATE10,  config: appium  -p 4730 -bp 4840 -U UYT0217B11004058,  platformName: android, port: 4730, pcPort: 1720, socketPort: 9010, minitouchPort: 1120, mtsp: 9060}
+
+

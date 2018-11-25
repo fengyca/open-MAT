@@ -1,0 +1,203 @@
+{% extends "local_base.html" %}
+{% block title %}云测试机|APP执行操控页面{% endblock %}
+{% block yunPhone %}active{% endblock %}
+{% block content %}
+    <div class="tpl-left-nav-list case" style="margin-left:3%;width:100%;">
+        <div class="tpl-content-wrapper col-md-4 col-xs-4">
+            <div class="tpl-portlet-components" style="margin-left:10%">
+                <div class="portlet-title" id="crawler1" style="margin-left:5%;display: none;">
+                    <div class="caption font-green bold" style="color:blue">
+                        <h3 style="display:inline-block;">
+                            <a href="#modal-container-499239" data-toggle="modal" title="点击查看帮助" style="color: blue">兼容性测试</a>
+                        </h3>
+                        <div style="display:inline-block;" id="message"></div>
+                        <div class="modal-footer"></div>
+                    </div>
+                </div>
+                <div class="row" id="crawler2" style="display: none">
+                    <div id="devicesList">
+                        <div style="margin-top: 3%;margin-left: 5%">
+                            <button id="startAppium" class="btn btn-primary">启动环境</button>
+                            <button id="stopAppium" class="btn btn-warning">关闭服务</button>
+                            <select id="select" style="margin-left: 10%">
+                                <option>--选择项目--</option>
+                                {% for i in fileName %}
+                                    <option>{{ i }}</option>
+                                {% endfor %}
+                            </select>
+                            <button id="startTEST" class="btn btn-success">执行测试</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer" id="crawler3" style="margin-top:5%;display: none;"></div>
+                <div class="portlet-title" style="margin-left:5%;display:inline-block;">
+                    <h3 title="可点击【投屏】进行功能测试，点击【启动】后台即启动Appium进程可进行自动化测试">
+                        <a href="#modal-container-499239" data-toggle="modal" style="color: blue" id="tagadmin">云真机</a>
+                    </h3>
+                </div>
+                <div style="display:inline-block;color: green" id="AppiumMessage"><span style="color: red;">用完请及时关闭投屏，以免影响其他人使用！！</span>
+                </div>
+                <div class="col-sm-">
+                    <div id="devicesList">
+                        <table class="table-bordered table" style="margin-left:0%;width:100%;" id="sort">
+                            <thead>
+                            <tr>
+                                <th style="width:4%">Devices</th>
+                                {#                                <th style="width:4%" class="index">UDID</th>#}
+                                {#                                <th style="width:4%">Port</th>#}
+                                <th style="width:10%">Status</th>
+                                <th style="width:10%">Appium</th>
+                                <th style="width:10%">Control</th>
+                            </tr>
+                            </thead>
+                            <tbody id="AppiumTbody" class="tbody">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div id="fyc"></div>
+            </div>
+            <div class="modal fade" id="modal-container-499239" role="dialog" aria-labelledby="myModalLabel"
+                 aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                            <h4 class="modal-title" id="myModalLabel">
+                                远程终端使用说明
+                            </h4>
+                        </div>
+                        <div class="modal-body">
+                            <h5>如果你用过STF，那么你应该很清楚这个是什么啦。</h5>
+                            <h5>如果要执行自动化脚本需要指定设备udid&IP&port,支持投屏以及投屏控制手机</h5>
+                            <h5>同样支持用投屏来做功能测试</h5>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-7 col-xs-7" id="frameHere"></div>
+        <div class="modal fade bd-example-modal-sm" id="myModal" role="dialog" data-backdrop="false" aria-hidden="true">
+            <div class="modal-dialog modal-sm">
+                <div class="modal-content">
+                    <div class="modal-header" id="AlertTitle" style="text-align:center">
+                    </div>
+                    <div class="modal-body">
+                        <p class="text-center mb-0" id="msg"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        //后门杀手锏
+        document.onkeydown = function (event) {
+            var e = event || window.event || arguments.callee.caller.arguments[0];
+            if (e.shiftKey && e.keyCode == 37) { // 按 shift + <-
+                // $("#fyc").html('<input id="fycudid"><input type="button" id="fycstop" class="btn btn-warning" value="shutdown"><input id="fycstopall" type="button" class="btn btn-danger" value="danger">');
+                $("#tagadmin").html('Admin');
+                $("#tagadmin").css('style', 'color: red');
+            } else if (e.shiftKey && e.keyCode == 39) { // 按 shift + ->
+                // $("#fyc").empty();
+                $("#tagadmin").html('云真机');
+                $("#tagadmin").css('style', 'color: blue');
+            } else if (e && e.keyCode == 116) {
+                WarningAlert("禁止刷新页面！");
+                e.returnValue = false;
+            } else if (e.shiftKey && e.keyCode == 38) {
+                $("#crawler1").css('display', 'block');
+                $("#crawler2").css('display', 'block');
+                $("#crawler3").css('display', 'block');
+            } else if (e.shiftKey && e.keyCode == 40) {
+                $("#crawler1").css('display', 'none');
+                $("#crawler2").css('display', 'none');
+                $("#crawler3").css('display', 'none');
+            }
+        };
+        $(document).ready(function () {
+            //第一次加载服务情况
+            getAppiumList();
+            setInterval(function () {
+                getAppiumList();
+            }, 3500);
+            //获取服务情况
+            function getAppiumList() {
+                // 页面加载，实时更新Appium环境的tbody
+                $.ajax({
+                    url: '/appcrawler/getAppiumList?devices=web',
+                    type: 'GET',
+                    datatype: 'json'
+                }).done(function (data) {
+                    $("#message").empty();
+                    if (data.dataList != '') {
+                        $("#AppiumTbody").empty();
+                        $("#AppiumTbody").html(data.dataList);
+                    }
+                    if (data.dataServer != 'True') {
+                        $("#message").html("<h6 style='color:green'>服务空闲...</h6>");
+                    } else {
+                        $("#message").html("<h6 style='color:red'>服务运行中...</h6>")
+                    }
+                });
+            }
+
+            // 启动服务，首先先清理一遍，然后再发起启动请求
+            $("#startAppium").click(function () {
+                $.ajax({
+                    url: '/appcrawler/stopServer',
+                    type: 'GET'
+                }).done(function (data) {
+                    if (data.data == 'True') {
+                        $.ajax({
+                            url: '/appcrawler/startServer',
+                            type: 'GET',
+                            datatype: 'json',
+                            beforeSend: function () {
+                                PassAlert("正在启动全局Appium服务")
+                            }
+                        });
+                    } else {
+                        ErrorAlert('系统异常，请联系fengyca！')
+                    }
+                });
+
+            });
+            // 终止服务
+            $("#stopAppium").click(function () {
+                $.ajax({
+                    url: '/appcrawler/stopServer',
+                    type: 'GET',
+                    datatype: 'json',
+                    beforeSend: function () {
+                        PassAlert('终止成功');
+                    }
+                })
+            });
+            $("#startTEST").click(function () {
+                var project = $("#select").val();
+                if (project == '--选择项目--') {
+                    WarningAlert("请选择项目！");
+                    return false
+                }
+                $.ajax({
+                    url: '/appcrawler/runTest',
+                    type: 'GET',
+                    datatype: 'json',
+                    data: {'project': project},
+                    beforeSend: function () {
+                        PassAlert("开始进行兼容性测试！")
+                    }
+                }).done(function (data) {
+                    if (data.data == 'False') {
+                        ErrorAlert("启动测试失败！！请联系fengyca！！")
+                    } else {
+                        PassAlert("测试启动成功！")
+                    }
+                })
+            });
+        });
+    </script>
+{% endblock %}
