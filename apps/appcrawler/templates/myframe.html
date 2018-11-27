@@ -230,7 +230,7 @@
     if (!canvas.getContext) {
         alert("Canvas not supported. Please install a HTML5 compatible browser.");
     }
-    var ws = new WebSocket('ws://10.126.1.52:{{ port }}', 'minicap');
+    var ws = new WebSocket('ws://xx.xx.xx.xx:{{ port }}', 'minicap');
     ws.binaryType = 'blob';
 
     ws.onclose = function () {
@@ -281,7 +281,7 @@
     }
 
     {#    连接minitouch的websocket，由websocket转发给minitouch#}
-    var wst = new WebSocket("ws://10.126.1.52:{{ mtsp }}");
+    var wst = new WebSocket("ws://xx.xx.xx.xx:{{ mtsp }}");
     wst.onopen = function (e) {
         console.log('Connection to server opened');
     };
