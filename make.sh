@@ -9,9 +9,7 @@ case $1 in
            sleep 1s
            uwsgi -x django_uwsgi.xml
            sleep 1s
-           sudo nginx << EOF
-           qwer1234
-EOF
+           sudo nginx
            echo "----启动成功-----"
            ;;
     stop)  # 服务停止需要做的步骤
@@ -23,9 +21,7 @@ EOF
            kill -9 $(ps -ef|grep uwsgi |awk '$0 !~/grep/ {print $2}' |tr -s '\n' ' ')
            uwsgi --stop uwsgi.pid
            sleep 1s
-           sudo nginx -s stop << EOF
-           qwer1234
-EOF
+           sudo nginx -s stop
            echo "----停止成功-----"
            ;;
    restart) # 重启服务需要做的步骤
@@ -35,15 +31,11 @@ EOF
            sleep 1s
            uwsgi --stop uwsgi.pid
            sleep 1s
-           sudo nginx -s stop << EOF
-           qwer1234
-EOF
+           sudo nginx -s stop
            kill -9 $(ps -ef|grep adb |awk '$0 !~/grep/ {print $2}' |tr -s '\n' ' ') > /dev/null
            uwsgi -x django_uwsgi.xml
            sleep 1s
-           sudo nginx << EOF
-           qwer1234
-EOF
+           sudo nginx
            echo "----重启成功-----"
             ;;
 esac
