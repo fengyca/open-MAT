@@ -1,9 +1,9 @@
 <uwsgi>
     <socket>:8077</socket>
-    <chdir>/Users/yyfaxx/MAT</chdir>
+    <chdir>/MAT</chdir>
     <module>django_wsgi</module>
     <processes>4</processes> <!-- 进程数 -->
-    <daemonize>/Users/yyfaxx/MAT/log/uwsgi.log</daemonize>
+    <daemonize>/MAT/log/uwsgi.log</daemonize>
     <!--<disable-logging>true</disable-logging>-->
     <log-maxsize>10000000</log-maxsize>
     <pidfile>uwsgi.pid</pidfile>
